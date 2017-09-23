@@ -14,3 +14,17 @@ indexes:
   properties:
   - name: post_key
   - name: post_time
+
+- kind: LikeType
+  properties:
+  - name: post_key
+  - name: user
+  - name: like_time
+    direction: desc
+
+- kind: ReactionType
+  properties:
+  - name: post_key
+  - name: user
+  - name: reaction_time
+    direction: desc

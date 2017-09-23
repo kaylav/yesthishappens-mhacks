@@ -19,12 +19,20 @@ class Post(ndb.Model):
     title = ndb.StringProperty()
     text = ndb.StringProperty()
     relate_count = ndb.IntegerProperty(default=0)
+    disrelate_count = ndb.IntegerProperty(default=0)
     view_count = ndb.IntegerProperty(default=0)
     recent_view_count = ndb.IntegerProperty(default=0)
     approved = ndb.BooleanProperty(default=True)
     flagged = ndb.BooleanProperty(default=False)
     clearFlag = ndb.BooleanProperty(default=False)
     tags = ndb.StringProperty(repeated=True)
+
+class ReactionType(ndb.Model):
+    user = ndb.StringProperty()
+    post_key = ndb.KeyProperty(kind=Post)
+    rating_type = ndb.BooleanProperty()
+    reaction_time = ndb.DateTimeProperty(auto_now_add=True)
+    #true = relate, false = disrelate
 
 class Comment(ndb.Model):
     user = ndb.StringProperty()
@@ -136,12 +144,50 @@ class RelateHandler(webapp2.RequestHandler):
         #2. Interacting with our Database and APIs
         post_key = ndb.Key(urlsafe = urlsafe_key)
         post = post_key.get()
-        relate = Relate.query().fetch()
-        if relate:
+        reaction = ReactionType.query().filter(ndb.AND(ReactionType.post_key == post_key, ReactionType.user == current_user)).order(-ReactionType.reaction_time).get()
+        if reaction:
+            if reaction.rating_type == False:
+                post.disrelate_count = post.disrelate_count - 1
+                post.relate_count = post.relate_count + 1
+                post.put()
+                reaction = ReactionType(user=current_user, rating_type=True, post_key=post_key)
+                reaction.put()
+        else:
             post.relate_count = post.relate_count + 1
             post.put()
-            relate = RelateType(user=current_user, post_key=post_key)
-            relate.put()
+            reaction = ReactionType(user=current_user, rating_type=True, post_key=post_key)
+            reaction.put()
+
+
+        # === 3: Send a response. ===
+        # Send the updated count back to the client.
+        url = "/post?key=" + post.key.urlsafe()
+        self.redirect(url)
+
+class DisrelateHandler(webapp2.RequestHandler):
+    def post(self):
+        current_user = users.get_current_user().email()
+        #1. Getting information from the request
+        urlsafe_key = self.request.get("post_key")
+        #2. Interacting with our Database and APIs
+        post_key = ndb.Key(urlsafe = urlsafe_key)
+        post = post_key.get()
+        reaction = ReactionType.query().filter(ndb.AND(ReactionType.post_key == post_key, ReactionType.user == current_user)).order(-ReactionType.reaction_time).get()
+        if reaction:
+            if reaction.rating_type == True:
+                post.relate_count = post.relate_count - 1
+                post.disrelate_count = post.disrelate_count + 1
+                post.put()
+                reaction = ReactionType(user=current_user, rating_type=False, post_key=post_key)
+                reaction.put()
+        else:
+            post.disrelate_count = post.disrelate_count + 1
+            post.put()
+            reaction = ReactionType(user=current_user, rating_type=False, post_key=post_key)
+            reaction.put()
+
+         # Increase the photo count and update the database.
+
 
         # === 3: Send a response. ===
         # Send the updated count back to the client.
@@ -159,7 +205,7 @@ app = webapp2.WSGIApplication([
     ('/about', AboutHandler),
     ('/about.html', AboutHandler),
     ('/relate', RelateHandler),
-    ('/relate', RelateHandler),
+    ('/disrelate', DisrelateHandler),
     ('/post', PostHandler),
     ('/post.html', PostHandler),
 ], debug=True)

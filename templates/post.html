@@ -10,16 +10,23 @@
     </div>
 
     <p>Title: {{post.title}}</p>
-    <p>User: {{post.user_email}}</p>
-    <p>Relates: {{post.relate_count}}</p>
-    <p>seen by: {{post.view_count}}</p>
-    <p>posted by: {{post.user_email}}</p>
+    <p>{{post.text}}</p>
 
     {% if current_user %}
       <form action = "/relate" method="post">
         <input type = "hidden" name = "post_key" value = "{{post.key.urlsafe()}}">
+          <button type = "submit" class = "reaction"> relate</button>
+        </form>
+      <form action = "/disrelate" method="post">
+        <input type = "hidden" name = "post_key" value = "{{post.key.urlsafe()}}">
+          <button type = "submit" class = "reaction">i'm sorry</button>
       </form>
-      <button type = "submit" class = "relate"></button>
     {% endif %}
+
+    <p>Relate Count: {{post.relate_count}}</p>
+    <p>Disrelate Count: {{post.disrelate_count}}</p>
+    <p>seen by: {{post.view_count}}</p>
+    <p>posted by: {{post.user_email}}</p>
+
   </body>
 </html>
