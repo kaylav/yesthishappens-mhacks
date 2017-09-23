@@ -9,25 +9,26 @@
       <a href="/" class = "header"><h2>YES THIS HAPPENS</h2></a>
     </div>
 
+    <p>Title: {{post.title}}</p>
+    <p>{{post.text}}</p>
+
     {% if current_user %}
       <form action = "/like" method="post">
         <input type = "hidden" name = "post_key" value = "{{post.key.urlsafe()}}">
-          <button type = "submit" class = "like">
-            <img src = "/pictures/frog.png" alt = "Dank" style = "width:60px;height:60px;">
-          </button>
+          <button type = "submit" class = "like"> relate</button>
         </form>
       <form action = "/dislike" method="post">
         <input type = "hidden" name = "post_key" value = "{{post.key.urlsafe()}}">
-          <button type = "submit" class = "like">
-            <img src = "/pictures/AngryPepe.png" alt = "Dank" style = "width:60px;height:60px;">
-          </button>
+          <button type = "submit" class = "like">i'm sorry</button>
       </form>
     {% endif %}
 
     <p>Likes: {{post.like_count}}</p>
     <p>Dislikes: {{post.dislike_count}}</p>
     <p>seen by: {{post.view_count}}</p>
-    <p>posted by: {{post.user}}</p>
+    <p>posted by: {{post.user_email}}</p>
 
   </body>
 </html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

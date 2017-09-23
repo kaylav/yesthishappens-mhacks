@@ -27,18 +27,18 @@ class Post(ndb.Model):
     clearFlag = ndb.BooleanProperty(default=False)
     tags = ndb.StringProperty(repeated=True)
 
-class Comment(ndb.Model):
-    user = ndb.StringProperty()
-    content = ndb.StringProperty()
-    post_time = ndb.DateTimeProperty(auto_now_add = True)
-    post_key = ndb.KeyProperty(kind=Post)
-
 class LikeType(ndb.Model):
     user = ndb.StringProperty()
     post_key = ndb.KeyProperty(kind=Post)
     rating_type = ndb.BooleanProperty()
     like_time = ndb.DateTimeProperty(auto_now_add=True)
     #true = like, false = dislike
+
+class Comment(ndb.Model):
+    user = ndb.StringProperty()
+    content = ndb.StringProperty()
+    post_time = ndb.DateTimeProperty(auto_now_add = True)
+    post_key = ndb.KeyProperty(kind=Post)
 
 class View(ndb.Model):
     user = ndb.StringProperty()
@@ -100,8 +100,8 @@ class PostHandler(webapp2.RequestHandler):
         current_user = users.get_current_user()
         #query, fetch, and filter the comments
         comments = Comment.query().filter(Comment.post_key == post_key).order(Comment.post_time).fetch()
-        #Get the number of likes, filter them by post key
-        #likes = Like.query().filter(Like.post_key == post_key).fetch()
+        #Get the number of relates, filter them by post key
+        #relates = Relate.query().filter(Relate.post_key == post_key).fetch()
 
         #==view counter==
         post.view_count += 1
@@ -112,8 +112,6 @@ class PostHandler(webapp2.RequestHandler):
             view.put()
             #===trending calculations===
         views = View.query().fetch()
-
-        views = View.query().fetch()
         time_difference = datetime.datetime.now() - datetime.timedelta(hours=2)
         # for post in posts:
         post_key = post.key.urlsafe()
@@ -121,17 +119,16 @@ class PostHandler(webapp2.RequestHandler):
         for view in views:
             if view.post_key.urlsafe() == post_key and view.view_time > time_difference:
                 post.recent_view_count += 1
-                like_delta = post.like_count - post.dislike_count
-                post.recent_view_count = post.recent_view_count * like_delta
+                post.recent_view_count = post.recent_view_count * post.like_count
                 post.put()
 
         template_vars = {
             "post": post,
             "comments": comments,
             "current_user": current_user,
-            'views': views,
+            'views': views
         }
-        template = jinja_environment.get_template("templates/post.html")
+        template = jinja_environment.get_template("post.html")
         self.response.write(template.render(template_vars))
 
 class LikeHandler(webapp2.RequestHandler):
@@ -203,10 +200,8 @@ app = webapp2.WSGIApplication([
     ('/resources.html', ResourcesHandler),
     ('/about', AboutHandler),
     ('/about.html', AboutHandler),
+    ('/like', LikeHandler),
+    ('/dislike', DislikeHandler),
     ('/post', PostHandler),
     ('/post.html', PostHandler),
-    ('/like', LikeHandler),
-    ('/like.html', LikeHandler),
-    ('/dislike', DislikeHandler),
-    ('/dislike.html', DislikeHandler),
 ], debug=True)
