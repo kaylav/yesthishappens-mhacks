@@ -4,8 +4,8 @@
 <html data-wf-page="59bdc96553d30a000121c626" data-wf-site="59bd592b157a460001f831da">
 <head>
   <meta charset="utf-8">
-  <title>Make Profile</title>
-  <meta content="Make Profile" property="og:title">
+  <title>New Post</title>
+  <meta content="New Post" property="og:title">
   <meta content="width=device-width, initial-scale=1" name="viewport">
   <meta content="Webflow" name="generator">
   <link href="css/normalize.css" rel="stylesheet" type="text/css">
@@ -25,13 +25,17 @@
 </head>
 <body>
   <div class="spacer"></div>
-  <div class="navigation-bar w-clearfix"><a class="brand-link w-inline-block" href="#"><img class="image" src="images/001-rudder.png"><h1 class="brand-text">Valencia Voyage</h1></a>
-    <a class="_826_link w-hidden-small w-hidden-tiny w-inline-block" href="https://826national.org" target="_blank">
-      <div class="_826_text w-hidden-small w-hidden-tiny">by</div><img class="_826_logo w-hidden-small w-hidden-tiny" src="images/826national2x.png"></a>
+  <div class="navigation-bar w-clearfix"><a class="brand-link w-inline-block" href="#"><img class="image" src="images/001-rudder.png"><h1 class="brand-text">yes, this happens.</h1></a>
+    {% if user %}
+    <a class="_826_link w-hidden-small w-hidden-tiny w-inline-block" href="{{logout_url}}" target="_blank">
+      <div class="_826_text w-hidden-small w-hidden-tiny">logout</div></a>
+      {% endif %}
   </div>
   <div class="section">
     <div class="row w-row">
-      <div class="column w-col w-col-3 w-col-small-small-stack w-col-tiny-tiny-stack"><a class="nav_button w-clearfix w-inline-block" href="index.html"><img class="navicon" src="images/826_home.png"><div class="float_left w-hidden-small w-hidden-tiny">Home</div></a><a class="nav_button w-clearfix w-inline-block" href="read.html"><img class="navicon" src="images/826_read.png"><div class="float_left w-hidden-small w-hidden-tiny">Read</div></a><a class="nav_button w-clearfix w-inline-block" href="write.html"><img class="navicon" src="images/826_write.png"><div class="float_left w-hidden-small w-hidden-tiny">Write</div></a><a class="nav_button w-clearfix w-inline-block" href="profile.html"><img class="navicon" src="images/826_profile.png"><div class="float_left w-hidden-small w-hidden-tiny">Profile</div></a><a class="logout nav_button w-clearfix w-inline-block" href="#"><img class="navicon" src="images/826_logout.png"><div class="float_left w-hidden-small w-hidden-tiny">Logout</div></a></div>
+      <div class="column w-col w-col-3 w-col-small-small-stack w-col-tiny-tiny-stack"><a class="nav_button w-clearfix w-inline-block" href="/"><img class="navicon" src="images/yth_home.png"><div class="float_left w-hidden-small w-hidden-tiny">Home</div></a><a class="nav_button w-clearfix w-inline-block" href="archive.html"><img class="navicon" src="images/yth_archive.png"><div class="float_left w-hidden-small w-hidden-tiny">Archive</div></a>
+      <a class="nav_button w-clearfix w-inline-block" href="newpost.html"><img class="navicon" src="images/yth_newpost.png"><div class="float_left w-hidden-small w-hidden-tiny">New Post</div></a><a class="nav_button w-clearfix w-inline-block" href="resources.html"><img class="navicon" src="images/yth_resources.png"><div class="float_left w-hidden-small w-hidden-tiny">Resources</div></a>
+      <a class="logout nav_button w-clearfix w-inline-block" href="about.html"><img class="navicon" src="images/yth_about.png"><div class="float_left w-hidden-small w-hidden-tiny">About</div></a></div>
       <div class="column-2 w-col w-col-9 w-col-small-small-stack w-col-tiny-tiny-stack">
         <div class="paper">
           <div class="section-title-group">
