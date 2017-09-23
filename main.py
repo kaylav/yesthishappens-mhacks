@@ -12,11 +12,39 @@ jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(template_d
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        #self.response.write('Hello world!!!!')
-
         template = jinja_environment.get_template('home.html')
         self.response.write(template.render())
 
+class ArchiveHandler(webapp2.RequestHandler):
+    def get(self):
+        template = jinja_environment.get_template('archive.html')
+        self.response.write(template.render())
+
+class NewPostHandler(webapp2.RequestHandler):
+    def get(self):
+        template = jinja_environment.get_template('new_post.html')
+        self.response.write(template.render())
+
+class ResourcesHandler(webapp2.RequestHandler):
+    def get(self):
+        template = jinja_environment.get_template('resources.html')
+        self.response.write(template.render())
+
+class AboutHandler(webapp2.RequestHandler):
+    def get(self):
+        template = jinja_environment.get_template('about.html')
+        self.response.write(template.render())
+
+class PostHandler(webapp2.RequestHandler):
+    def get(self):
+        template = jinja_environment.get_template('post.html')
+        self.response.write(template.render())
+
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    ('/', MainHandler),
+    ('/archive', ArchiveHandler),
+    ('/new_post', NewPostHandler),
+    ('/resources', ResourcesHandler),
+    ('/about', AboutHandler),
+    ('/post', PostHandler)
 ], debug=True)
