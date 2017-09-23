@@ -10,6 +10,38 @@ import logging
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir))
 
+#==================MODELS=======================
+
+class Post(ndb.Model):
+    user = ndb.StringProperty()
+    post_time = ndb.DateTimeProperty(auto_now_add=True)
+    title = ndb.StringProperty()
+    caption = ndb.StringProperty()
+    post_img_url = ndb.StringProperty()
+    relate_count = ndb.IntegerProperty(default=0)
+    view_count = ndb.IntegerProperty(default=0)
+    recent_view_count = ndb.IntegerProperty(default=0)
+
+class Comment(ndb.Model):
+    user = ndb.StringProperty()
+    content = ndb.StringProperty()
+    post_time = ndb.DateTimeProperty(auto_now_add = True)
+    post_key = ndb.KeyProperty(kind=Post)
+
+class View(ndb.Model):
+    user = ndb.StringProperty()
+    post_key = ndb.KeyProperty(kind=Post)
+    view_time = ndb.DateTimeProperty(auto_now_add=True)
+
+class Flag(ndb.Model):
+    user = ndb.StringProperty()
+    post_key = ndb.KeyProperty(kind=Post)
+    flagged = ndb.BooleanProperty()
+    flag_time = ndb.DateTimeProperty(auto_now_add=True)
+    #true = flagged, false = not flagged
+    
+#=================HANDLERS===========================
+
 class MainHandler(webapp2.RequestHandler):
     def get(self):
         template = jinja_environment.get_template('home.html')
