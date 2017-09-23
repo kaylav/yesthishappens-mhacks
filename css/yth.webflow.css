@@ -116,7 +116,7 @@ figcaption {
   padding-top: 20px;
   padding-right: 20px;
   padding-left: 20px;
-  background-color: #006b79;
+  background-color: #52405A;
   box-shadow: 1px 1px 7px -1px #a8a8a8;
 }
 
@@ -237,7 +237,7 @@ figcaption {
   padding: 20px;
   border-radius: 5px;
   background-color: #f1f1f1;
-  color: #006b79;
+  color: #52405A;
   text-align: left;
 }
 
@@ -276,7 +276,7 @@ figcaption {
 }
 
 .bio.parent_text {
-  color: #006b79;
+  color: #52405A;
 }
 
 .image {
@@ -373,7 +373,7 @@ figcaption {
 .story_title {
   margin-bottom: 10px;
   font-family: 'Brandon Bold', sans-serif;
-  color: #006b79;
+  color: #52405A;
 }
 
 .story_info {
@@ -399,43 +399,8 @@ figcaption {
   background-size: cover;
 }
 
-.hometown {
-  display: block;
-}
-
 .past_stories {
   margin-bottom: 20px;
-}
-
-.badges {
-  margin-bottom: 20px;
-}
-
-.badge {
-  display: inline-block;
-  width: 50px;
-  height: 50px;
-  margin-right: 10px;
-  margin-bottom: 10px;
-  background-image: url('../images/001-gold-medal.png');
-  background-position: 0px 0px;
-  background-size: cover;
-}
-
-.badge._2 {
-  background-image: url('../images/003-silver-medal.png');
-}
-
-.badge._3 {
-  background-image: url('../images/002-bronze-medal.png');
-}
-
-.badge._4 {
-  background-image: url('../images/004-flag.png');
-}
-
-.badge._5 {
-  background-image: url('../images/006-new.png');
 }
 
 .tab-link {
@@ -464,7 +429,7 @@ figcaption {
 }
 
 .button {
-  background-color: #006b79;
+  background-color: #52405A;
 }
 
 .button.approval {
@@ -481,7 +446,7 @@ figcaption {
 }
 
 .submit-button-2 {
-  background-color: #00bcd4;
+  background-color: #52405A;
 }
 
 .about_section {
@@ -492,7 +457,7 @@ figcaption {
 
 .button-2 {
   border-radius: 5px;
-  background-color: #00bcd4;
+  background-color: #52405A;
 }
 
 html.w-mod-js *[data-ix="fade-in-bottom-page-loads"] {
