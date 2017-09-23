@@ -64,8 +64,12 @@ class MainHandler(webapp2.RequestHandler):
 
 class ArchiveHandler(webapp2.RequestHandler):
     def get(self):
+        posts = Post.query().fetch()
+        template_vars = {
+            "posts": posts
+        }
         template = jinja_environment.get_template('archive.html')
-        self.response.write(template.render())
+        self.response.write(template.render(template_vars))
 
 class NewPostHandler(webapp2.RequestHandler):
     def get(self):
