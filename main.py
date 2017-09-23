@@ -13,14 +13,17 @@ jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(template_d
 #==================MODELS=======================
 
 class Post(ndb.Model):
-    user = ndb.StringProperty()
+    user_email = ndb.StringProperty()
     post_time = ndb.DateTimeProperty(auto_now_add=True)
     title = ndb.StringProperty()
-    caption = ndb.StringProperty()
-    post_img_url = ndb.StringProperty()
+    text = ndb.StringProperty()
     relate_count = ndb.IntegerProperty(default=0)
     view_count = ndb.IntegerProperty(default=0)
     recent_view_count = ndb.IntegerProperty(default=0)
+    approved = ndb.BooleanProperty(default=True)
+    flagged = ndb.BooleanProperty(default=False)
+    clearFlag = ndb.BooleanProperty(default=False)
+    tags = ndb.StringProperty(repeated=True)
 
 class Comment(ndb.Model):
     user = ndb.StringProperty()
