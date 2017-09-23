@@ -83,8 +83,14 @@ class AboutHandler(webapp2.RequestHandler):
 
 class PostHandler(webapp2.RequestHandler):
     def get(self):
+        posts = Post.query().fetch()
+        template_vars = {
+            "posts" : posts
+        }
+        post = Post(title = title, text = text)
+        post.put()
         template = jinja_environment.get_template('post.html')
-        self.response.write(template.render())
+        self.response.write(template.render(template_vars))
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
