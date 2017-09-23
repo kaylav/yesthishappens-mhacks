@@ -33,5 +33,16 @@
         </nav>
       {% endif %}
 
+      <h2>POSTS</h2>
+      {% for post in posts %}
+        <a href="/post?key={{post.key.urlsafe()}}">
+          <p>Title: {{post.title}}</p>
+          <p>{{post.text}}</p>
+          <p>Relates: {{post.relate_count}}</p>
+          <p>seen by: {{post.view_count}}</p>
+          <p>posted by: {{post.user_email}}</p>
+        </a>
+      {% endfor %}
+
   </body>
 </html>

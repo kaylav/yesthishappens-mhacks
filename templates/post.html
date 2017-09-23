@@ -8,5 +8,18 @@
     <div class = "mainheader">
       <a href="/" class = "header"><h2>YES THIS HAPPENS</h2></a>
     </div>
+
+    <p>Title: {{post.title}}</p>
+    <p>User: {{post.user_email}}</p>
+    <p>Relates: {{post.relate_count}}</p>
+    <p>seen by: {{post.view_count}}</p>
+    <p>posted by: {{post.user_email}}</p>
+
+    {% if current_user %}
+      <form action = "/relate" method="post">
+        <input type = "hidden" name = "post_key" value = "{{post.key.urlsafe()}}">
+      </form>
+      <button type = "submit" class = "relate"></button>
+    {% endif %}
   </body>
 </html>
