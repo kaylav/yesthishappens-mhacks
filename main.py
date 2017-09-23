@@ -84,16 +84,6 @@ class AboutHandler(webapp2.RequestHandler):
 
 class PostHandler(webapp2.RequestHandler):
     def get(self):
-<<<<<<< HEAD
-        posts = Post.query().fetch()
-        template_vars = {
-            "posts" : posts
-        }
-        post = Post(title = title, text = text)
-        post.put()
-        template = jinja_environment.get_template('post.html')
-        self.response.write(template.render(template_vars))
-=======
         #1. Get information from the request
         urlsafe_key = self.request.get("key")
         #2. Pulling the post from the database
@@ -153,7 +143,6 @@ class RelateHandler(webapp2.RequestHandler):
         # Send the updated count back to the client.
         url = "/post?key=" + post.key.urlsafe()
         self.redirect(url)
->>>>>>> 97d2726491de04a671a8ec4e8af20df4ddd44155
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
