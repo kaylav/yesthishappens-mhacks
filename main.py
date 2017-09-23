@@ -18,7 +18,8 @@ class Post(ndb.Model):
     post_time = ndb.DateTimeProperty(auto_now_add=True)
     title = ndb.StringProperty()
     text = ndb.StringProperty()
-    relate_count = ndb.IntegerProperty(default=0)
+    like_count = ndb.IntegerProperty(default=0)
+    dislike_count = ndb.IntegerProperty(default=0)
     view_count = ndb.IntegerProperty(default=0)
     recent_view_count = ndb.IntegerProperty(default=0)
     approved = ndb.BooleanProperty(default=True)
@@ -26,16 +27,18 @@ class Post(ndb.Model):
     clearFlag = ndb.BooleanProperty(default=False)
     tags = ndb.StringProperty(repeated=True)
 
-class Relate(ndb.Model):
-    user = ndb.StringProperty()
-    post_key = ndb.KeyProperty(kind=Post)
-    relate_time = ndb.DateTimeProperty(auto_now_add=True)
-
 class Comment(ndb.Model):
     user = ndb.StringProperty()
     content = ndb.StringProperty()
     post_time = ndb.DateTimeProperty(auto_now_add = True)
     post_key = ndb.KeyProperty(kind=Post)
+
+class LikeType(ndb.Model):
+    user = ndb.StringProperty()
+    post_key = ndb.KeyProperty(kind=Post)
+    rating_type = ndb.BooleanProperty()
+    like_time = ndb.DateTimeProperty(auto_now_add=True)
+    #true = like, false = dislike
 
 class View(ndb.Model):
     user = ndb.StringProperty()
@@ -97,8 +100,8 @@ class PostHandler(webapp2.RequestHandler):
         current_user = users.get_current_user()
         #query, fetch, and filter the comments
         comments = Comment.query().filter(Comment.post_key == post_key).order(Comment.post_time).fetch()
-        #Get the number of relates, filter them by post key
-        #relates = Relate.query().filter(Relate.post_key == post_key).fetch()
+        #Get the number of likes, filter them by post key
+        #likes = Like.query().filter(Like.post_key == post_key).fetch()
 
         #==view counter==
         post.view_count += 1
@@ -109,6 +112,8 @@ class PostHandler(webapp2.RequestHandler):
             view.put()
             #===trending calculations===
         views = View.query().fetch()
+
+        views = View.query().fetch()
         time_difference = datetime.datetime.now() - datetime.timedelta(hours=2)
         # for post in posts:
         post_key = post.key.urlsafe()
@@ -116,19 +121,20 @@ class PostHandler(webapp2.RequestHandler):
         for view in views:
             if view.post_key.urlsafe() == post_key and view.view_time > time_difference:
                 post.recent_view_count += 1
-                post.recent_view_count = post.recent_view_count * post.relate_count
+                like_delta = post.like_count - post.dislike_count
+                post.recent_view_count = post.recent_view_count * like_delta
                 post.put()
 
         template_vars = {
             "post": post,
             "comments": comments,
             "current_user": current_user,
-            'views': views
+            'views': views,
         }
-        template = jinja_environment.get_template("post.html")
+        template = jinja_environment.get_template("templates/post.html")
         self.response.write(template.render(template_vars))
 
-class RelateHandler(webapp2.RequestHandler):
+class LikeHandler(webapp2.RequestHandler):
     def post(self):
         current_user = users.get_current_user().email()
 
@@ -137,12 +143,50 @@ class RelateHandler(webapp2.RequestHandler):
         #2. Interacting with our Database and APIs
         post_key = ndb.Key(urlsafe = urlsafe_key)
         post = post_key.get()
-        relate = Relate.query().fetch()
+        like = LikeType.query().filter(ndb.AND(LikeType.post_key == post_key, LikeType.user == current_user)).order(-LikeType.like_time).get()
+        if like:
+            if like.rating_type == False:
+                post.dislike_count = post.dislike_count - 1
+                post.like_count = post.like_count + 1
+                post.put()
+                like = LikeType(user=current_user, rating_type=True, post_key=post_key)
+                like.put()
+        else:
+            post.like_count = post.like_count + 1
+            post.put()
+            like = LikeType(user=current_user, rating_type=True, post_key=post_key)
+            like.put()
 
-        post.relate_count = post.relate_count + 1
-        post.put()
-        relate = Relate(user=current_user, post_key=post_key)
-        relate.put()
+
+        # === 3: Send a response. ===
+        # Send the updated count back to the client.
+        url = "/post?key=" + post.key.urlsafe()
+        self.redirect(url)
+
+class DislikeHandler(webapp2.RequestHandler):
+    def post(self):
+        current_user = users.get_current_user().email()
+        #1. Getting information from the request
+        urlsafe_key = self.request.get("post_key")
+        #2. Interacting with our Database and APIs
+        post_key = ndb.Key(urlsafe = urlsafe_key)
+        post = post_key.get()
+        like = LikeType.query().filter(ndb.AND(LikeType.post_key == post_key, LikeType.user == current_user)).order(-LikeType.like_time).get()
+        if like:
+            if like.rating_type == True:
+                post.like_count = post.like_count - 1
+                post.dislike_count = post.dislike_count + 1
+                post.put()
+                like = LikeType(user=current_user, rating_type=False, post_key=post_key)
+                like.put()
+        else:
+            post.dislike_count = post.dislike_count + 1
+            post.put()
+            like = LikeType(user=current_user, rating_type=False, post_key=post_key)
+            like.put()
+
+         # Increase the photo count and update the database.
+
 
         # === 3: Send a response. ===
         # Send the updated count back to the client.
@@ -159,8 +203,10 @@ app = webapp2.WSGIApplication([
     ('/resources.html', ResourcesHandler),
     ('/about', AboutHandler),
     ('/about.html', AboutHandler),
-    ('/relate', RelateHandler),
-    ('/relate.html', RelateHandler),
     ('/post', PostHandler),
     ('/post.html', PostHandler),
+    ('/like', LikeHandler),
+    ('/like.html', LikeHandler),
+    ('/dislike', DislikeHandler),
+    ('/dislike.html', DislikeHandler),
 ], debug=True)

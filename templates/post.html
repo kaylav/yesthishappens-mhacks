@@ -9,16 +9,25 @@
       <a href="/" class = "header"><h2>YES THIS HAPPENS</h2></a>
     </div>
 
-    <p>Title: {{post.title}}</p>
-    <p>User: {{post.user_email}}</p>
-    <p>Relates: {{post.relate_count}}</p>
-    <p>seen by: {{post.view_count}}</p>
-    <p>posted by: {{post.user_email}}</p>
-
     {% if current_user %}
-      <form action = "/relate" method = "post">
-        <button type = "button" value = "relate">relate</button>
+      <form action = "/like" method="post">
+        <input type = "hidden" name = "post_key" value = "{{post.key.urlsafe()}}">
+          <button type = "submit" class = "like">
+            <img src = "/pictures/frog.png" alt = "Dank" style = "width:60px;height:60px;">
+          </button>
+        </form>
+      <form action = "/dislike" method="post">
+        <input type = "hidden" name = "post_key" value = "{{post.key.urlsafe()}}">
+          <button type = "submit" class = "like">
+            <img src = "/pictures/AngryPepe.png" alt = "Dank" style = "width:60px;height:60px;">
+          </button>
       </form>
     {% endif %}
+
+    <p>Likes: {{post.like_count}}</p>
+    <p>Dislikes: {{post.dislike_count}}</p>
+    <p>seen by: {{post.view_count}}</p>
+    <p>posted by: {{post.user}}</p>
+
   </body>
 </html>
