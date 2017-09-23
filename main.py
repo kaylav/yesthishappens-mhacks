@@ -68,7 +68,7 @@ class ArchiveHandler(webapp2.RequestHandler):
 
 class NewPostHandler(webapp2.RequestHandler):
     def get(self):
-        template = jinja_environment.get_template('new_post.html')
+        template = jinja_environment.get_template('newpost.html')
         self.response.write(template.render())
 
 class ResourcesHandler(webapp2.RequestHandler):
@@ -95,8 +95,13 @@ class PostHandler(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/archive', ArchiveHandler),
-    ('/new_post', NewPostHandler),
+    ('/archive.html', ArchiveHandler),
+    ('/newpost', NewPostHandler),
+    ('/newpost.html', NewPostHandler),
     ('/resources', ResourcesHandler),
+    ('/resources.html', ResourcesHandler),
     ('/about', AboutHandler),
-    ('/post', PostHandler)
+    ('/about.html', AboutHandler),
+    ('/post', PostHandler),
+    ('/post.html', PostHandler),
 ], debug=True)
