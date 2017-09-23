@@ -13,22 +13,20 @@
     <p>{{post.text}}</p>
 
     {% if current_user %}
-      <form action = "/like" method="post">
+      <form action = "/relate" method="post">
         <input type = "hidden" name = "post_key" value = "{{post.key.urlsafe()}}">
-          <button type = "submit" class = "like"> relate</button>
+          <button type = "submit" class = "reaction"> relate</button>
         </form>
-      <form action = "/dislike" method="post">
+      <form action = "/disrelate" method="post">
         <input type = "hidden" name = "post_key" value = "{{post.key.urlsafe()}}">
-          <button type = "submit" class = "like">i'm sorry</button>
+          <button type = "submit" class = "reaction">i'm sorry</button>
       </form>
     {% endif %}
 
-    <p>Likes: {{post.like_count}}</p>
-    <p>Dislikes: {{post.dislike_count}}</p>
+    <p>Relate Count: {{post.relate_count}}</p>
+    <p>Disrelate Count: {{post.disrelate_count}}</p>
     <p>seen by: {{post.view_count}}</p>
     <p>posted by: {{post.user_email}}</p>
 
   </body>
 </html>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

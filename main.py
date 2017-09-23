@@ -18,8 +18,8 @@ class Post(ndb.Model):
     post_time = ndb.DateTimeProperty(auto_now_add=True)
     title = ndb.StringProperty()
     text = ndb.StringProperty()
-    like_count = ndb.IntegerProperty(default=0)
-    dislike_count = ndb.IntegerProperty(default=0)
+    relate_count = ndb.IntegerProperty(default=0)
+    disrelate_count = ndb.IntegerProperty(default=0)
     view_count = ndb.IntegerProperty(default=0)
     recent_view_count = ndb.IntegerProperty(default=0)
     approved = ndb.BooleanProperty(default=True)
@@ -27,12 +27,12 @@ class Post(ndb.Model):
     clearFlag = ndb.BooleanProperty(default=False)
     tags = ndb.StringProperty(repeated=True)
 
-class LikeType(ndb.Model):
+class ReactionType(ndb.Model):
     user = ndb.StringProperty()
     post_key = ndb.KeyProperty(kind=Post)
     rating_type = ndb.BooleanProperty()
-    like_time = ndb.DateTimeProperty(auto_now_add=True)
-    #true = like, false = dislike
+    reaction_time = ndb.DateTimeProperty(auto_now_add=True)
+    #true = relate, false = disrelate
 
 class Comment(ndb.Model):
     user = ndb.StringProperty()
@@ -119,7 +119,7 @@ class PostHandler(webapp2.RequestHandler):
         for view in views:
             if view.post_key.urlsafe() == post_key and view.view_time > time_difference:
                 post.recent_view_count += 1
-                post.recent_view_count = post.recent_view_count * post.like_count
+                post.recent_view_count = post.recent_view_count * post.relate_count
                 post.put()
 
         template_vars = {
@@ -131,7 +131,7 @@ class PostHandler(webapp2.RequestHandler):
         template = jinja_environment.get_template("post.html")
         self.response.write(template.render(template_vars))
 
-class LikeHandler(webapp2.RequestHandler):
+class RelateHandler(webapp2.RequestHandler):
     def post(self):
         current_user = users.get_current_user().email()
 
@@ -140,19 +140,19 @@ class LikeHandler(webapp2.RequestHandler):
         #2. Interacting with our Database and APIs
         post_key = ndb.Key(urlsafe = urlsafe_key)
         post = post_key.get()
-        like = LikeType.query().filter(ndb.AND(LikeType.post_key == post_key, LikeType.user == current_user)).order(-LikeType.like_time).get()
-        if like:
-            if like.rating_type == False:
-                post.dislike_count = post.dislike_count - 1
-                post.like_count = post.like_count + 1
+        reaction = ReactionType.query().filter(ndb.AND(ReactionType.post_key == post_key, ReactionType.user == current_user)).order(-ReactionType.reaction_time).get()
+        if reaction:
+            if reaction.rating_type == False:
+                post.disrelate_count = post.disrelate_count - 1
+                post.relate_count = post.relate_count + 1
                 post.put()
-                like = LikeType(user=current_user, rating_type=True, post_key=post_key)
-                like.put()
+                reaction = ReactionType(user=current_user, rating_type=True, post_key=post_key)
+                reaction.put()
         else:
-            post.like_count = post.like_count + 1
+            post.relate_count = post.relate_count + 1
             post.put()
-            like = LikeType(user=current_user, rating_type=True, post_key=post_key)
-            like.put()
+            reaction = ReactionType(user=current_user, rating_type=True, post_key=post_key)
+            reaction.put()
 
 
         # === 3: Send a response. ===
@@ -160,7 +160,7 @@ class LikeHandler(webapp2.RequestHandler):
         url = "/post?key=" + post.key.urlsafe()
         self.redirect(url)
 
-class DislikeHandler(webapp2.RequestHandler):
+class DisrelateHandler(webapp2.RequestHandler):
     def post(self):
         current_user = users.get_current_user().email()
         #1. Getting information from the request
@@ -168,19 +168,19 @@ class DislikeHandler(webapp2.RequestHandler):
         #2. Interacting with our Database and APIs
         post_key = ndb.Key(urlsafe = urlsafe_key)
         post = post_key.get()
-        like = LikeType.query().filter(ndb.AND(LikeType.post_key == post_key, LikeType.user == current_user)).order(-LikeType.like_time).get()
-        if like:
-            if like.rating_type == True:
-                post.like_count = post.like_count - 1
-                post.dislike_count = post.dislike_count + 1
+        reaction = ReactionType.query().filter(ndb.AND(ReactionType.post_key == post_key, ReactionType.user == current_user)).order(-ReactionType.reaction_time).get()
+        if reaction:
+            if reaction.rating_type == True:
+                post.relate_count = post.relate_count - 1
+                post.disrelate_count = post.disrelate_count + 1
                 post.put()
-                like = LikeType(user=current_user, rating_type=False, post_key=post_key)
-                like.put()
+                reaction = ReactionType(user=current_user, rating_type=False, post_key=post_key)
+                reaction.put()
         else:
-            post.dislike_count = post.dislike_count + 1
+            post.disrelate_count = post.disrelate_count + 1
             post.put()
-            like = LikeType(user=current_user, rating_type=False, post_key=post_key)
-            like.put()
+            reaction = ReactionType(user=current_user, rating_type=False, post_key=post_key)
+            reaction.put()
 
          # Increase the photo count and update the database.
 
@@ -200,8 +200,8 @@ app = webapp2.WSGIApplication([
     ('/resources.html', ResourcesHandler),
     ('/about', AboutHandler),
     ('/about.html', AboutHandler),
-    ('/like', LikeHandler),
-    ('/dislike', DislikeHandler),
+    ('/relate', RelateHandler),
+    ('/disrelate', DisrelateHandler),
     ('/post', PostHandler),
     ('/post.html', PostHandler),
 ], debug=True)
