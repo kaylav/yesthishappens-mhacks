@@ -39,12 +39,12 @@
       <div class="column-2 w-col w-col-9 w-col-small-small-stack w-col-tiny-tiny-stack">
         <div class="paper">
           <div class="section-title-group">
-            <h2 class="section-heading story_header">Make your profile</h2>
+            <h2 class="section-heading story_header">Trending Posts</h2>
           </div>
     </div>
 
-      {% if current_user %} <!--make if statement apply to formatted version-->
-      <nav>
+      <!--{% if current_user %} <!--make if statement apply to formatted version-->
+      <!--<nav>
         <a href="/archive">ARCHIVE</a>
         |
         <a href="/newpost">NEW POST</a>
@@ -65,9 +65,8 @@
           |
           <a href="{{login_url}}" class="log">LOGIN</a>
         </nav>
-      {% endif %}
+      {% endif %}-->
 
-      <h2>POSTS</h2>
       {% for post in posts %}
         <a href="/post?key={{post.key.urlsafe()}}">
           <p>Title: {{post.title}}</p>
