@@ -1,6 +1,7 @@
 import webapp2
 import os
 import jinja2
+import datetime
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -83,6 +84,7 @@ class AboutHandler(webapp2.RequestHandler):
 
 class PostHandler(webapp2.RequestHandler):
     def get(self):
+<<<<<<< HEAD
         posts = Post.query().fetch()
         template_vars = {
             "posts" : posts
@@ -91,6 +93,67 @@ class PostHandler(webapp2.RequestHandler):
         post.put()
         template = jinja_environment.get_template('post.html')
         self.response.write(template.render(template_vars))
+=======
+        #1. Get information from the request
+        urlsafe_key = self.request.get("key")
+        #2. Pulling the post from the database
+        post_key = ndb.Key(urlsafe = urlsafe_key)
+        post = post_key.get()
+        current_user = users.get_current_user()
+        #query, fetch, and filter the comments
+        comments = Comment.query().filter(Comment.post_key == post_key).order(Comment.post_time).fetch()
+        #Get the number of relates, filter them by post key
+        #relates = Relate.query().filter(Relate.post_key == post_key).fetch()
+
+        #==view counter==
+        post.view_count += 1
+        post.put()
+        views = View.query().fetch()
+        if current_user:
+            view = View(user=current_user.email(), post_key=post_key)
+            view.put()
+            #===trending calculations===
+        views = View.query().fetch()
+        time_difference = datetime.datetime.now() - datetime.timedelta(hours=2)
+        # for post in posts:
+        post_key = post.key.urlsafe()
+        post.recent_view_count = 0
+        for view in views:
+            if view.post_key.urlsafe() == post_key and view.view_time > time_difference:
+                post.recent_view_count += 1
+                post.recent_view_count = post.recent_view_count * post.relate_count
+                post.put()
+
+        template_vars = {
+            "post": post,
+            "comments": comments,
+            "current_user": current_user,
+            'views': views
+        }
+        template = jinja_environment.get_template("post.html")
+        self.response.write(template.render(template_vars))
+
+class RelateHandler(webapp2.RequestHandler):
+    def post(self):
+        current_user = users.get_current_user().email()
+
+        #1. Getting information from the request
+        urlsafe_key = self.request.get("post_key")
+        #2. Interacting with our Database and APIs
+        post_key = ndb.Key(urlsafe = urlsafe_key)
+        post = post_key.get()
+        relate = Relate.query().fetch()
+        if relate:
+            post.relate_count = post.relate_count + 1
+            post.put()
+            relate = RelateType(user=current_user, post_key=post_key)
+            relate.put()
+
+        # === 3: Send a response. ===
+        # Send the updated count back to the client.
+        url = "/post?key=" + post.key.urlsafe()
+        self.redirect(url)
+>>>>>>> 97d2726491de04a671a8ec4e8af20df4ddd44155
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
@@ -102,6 +165,8 @@ app = webapp2.WSGIApplication([
     ('/resources.html', ResourcesHandler),
     ('/about', AboutHandler),
     ('/about.html', AboutHandler),
+    ('/relate', RelateHandler),
+    ('/relate', RelateHandler),
     ('/post', PostHandler),
     ('/post.html', PostHandler),
 ], debug=True)
