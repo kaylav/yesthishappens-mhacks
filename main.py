@@ -39,13 +39,24 @@ class Flag(ndb.Model):
     flagged = ndb.BooleanProperty()
     flag_time = ndb.DateTimeProperty(auto_now_add=True)
     #true = flagged, false = not flagged
-    
+
 #=================HANDLERS===========================
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
+        current_user = users.get_current_user()
+        login_url = users.create_login_url('/')
+        logout_url = users.create_logout_url('/')
+        #order trending
+        posts = Post.query().order(-Post.recent_view_count).fetch()
+        template_vars = {
+            "posts": posts,
+            "current_user": current_user,
+            "logout_url": logout_url,
+            "login_url": login_url
+        }
         template = jinja_environment.get_template('home.html')
-        self.response.write(template.render())
+        self.response.write(template.render(template_vars))
 
 class ArchiveHandler(webapp2.RequestHandler):
     def get(self):

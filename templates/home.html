@@ -1,11 +1,37 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <title></title>
+    <title>YES THIS HAPPENS</title>
   </head>
+
   <body>
-    Hello World!
+    <div class = "mainheader">
+      <a href="/" class = "header"><h1>YES THIS HAPPENS</h1></a>
+    </div>
+
+      {% if current_user %}
+      <nav>
+        <a href="/archive">ARCHIVE</a>
+        |
+        <a href="/new_post">NEW POST</a>
+        |
+        <a href="/resources">RESOURCES</a>
+        |
+        <a href="/about">ABOUT</a>
+        |
+        <a href="{{logout_url}}" class="log">LOGOUT</a>
+      </nav>
+      {% else %}
+        <nav>
+          <a href="/archive">ARCHIVE</a>
+          |
+          <a href="/resources">RESOURCES</a>
+          |
+          <a href="/about">ABOUT</a>
+          |
+          <a href="{{login_url}}" class="log">LOGIN</a>
+        </nav>
+      {% endif %}
 
   </body>
 </html>
