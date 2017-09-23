@@ -26,6 +26,11 @@ class Post(ndb.Model):
     clearFlag = ndb.BooleanProperty(default=False)
     tags = ndb.StringProperty(repeated=True)
 
+class Relate(ndb.Model):
+    user = ndb.StringProperty()
+    post_key = ndb.KeyProperty(kind=Post)
+    relate_time = ndb.DateTimeProperty(auto_now_add=True)
+
 class Comment(ndb.Model):
     user = ndb.StringProperty()
     content = ndb.StringProperty()
@@ -133,11 +138,11 @@ class RelateHandler(webapp2.RequestHandler):
         post_key = ndb.Key(urlsafe = urlsafe_key)
         post = post_key.get()
         relate = Relate.query().fetch()
-        if relate:
-            post.relate_count = post.relate_count + 1
-            post.put()
-            relate = RelateType(user=current_user, post_key=post_key)
-            relate.put()
+
+        post.relate_count = post.relate_count + 1
+        post.put()
+        relate = Relate(user=current_user, post_key=post_key)
+        relate.put()
 
         # === 3: Send a response. ===
         # Send the updated count back to the client.
@@ -155,7 +160,7 @@ app = webapp2.WSGIApplication([
     ('/about', AboutHandler),
     ('/about.html', AboutHandler),
     ('/relate', RelateHandler),
-    ('/relate', RelateHandler),
+    ('/relate.html', RelateHandler),
     ('/post', PostHandler),
     ('/post.html', PostHandler),
 ], debug=True)
