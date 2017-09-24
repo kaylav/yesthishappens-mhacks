@@ -178,7 +178,8 @@ figcaption {
 }
 
 .section-title-group {
-  margin-bottom: 30px;
+  margin-bottom: 15px;
+  border: 30px;
 }
 
 .utility-page-wrap {
