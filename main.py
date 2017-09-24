@@ -1,3 +1,6 @@
+#TODO: Search bar in archive/ filter by tags
+#TODO: Get flag button working 
+
 import webapp2
 import os
 import jinja2
