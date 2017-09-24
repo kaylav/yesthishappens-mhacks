@@ -106,6 +106,13 @@ figcaption {
   text-align: center;
 }
 
+.lockinline{
+  display: inline-block;
+  padding: 30px
+
+}
+
+
 .navigation-bar {
   position: fixed;
   left: 0px;
