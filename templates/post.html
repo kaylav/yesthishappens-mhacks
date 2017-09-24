@@ -38,9 +38,10 @@
         <div class="paper">
           <div class="section-title-group">
             <h2 class="section-heading story_header">{{post.title}}</h2>
-            <h5>posted by: {{post.user_email}}</h5>
+            <h6>posted on: {{post.post_time}}</h6>
             <p>{{post.text}}</p>
-            <hr>
+            <br> <p> tagged as: {% for tag in post.tags %} #{{tag}}&nbsp;&nbsp;{% endfor %}</p>
+            <br>
             {% if current_user %}
               <form action = "/relate" method="post">
                 <input type = "hidden" name = "post_key" value = "{{post.key.urlsafe()}}">
@@ -53,7 +54,7 @@
               </form>
             {% endif %}
 
-            <h6><br>relate count: {{post.relate_count}}      validate count: {{post.disrelate_count}}</h6>
+            <h6><br>{{post.relate_count}} people validated this     {{post.disrelate_count}} people validated this</h6>
             <h6>seen by: {{post.view_count}}</h6>
           </div>
         </div>
