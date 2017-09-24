@@ -42,6 +42,7 @@
             <p>{{post.text}}</p>
             <br> <p> tagged as: {% for tag in post.tags %} #{{tag}}&nbsp;&nbsp;{% endfor %}</p>
             <br>
+            <img class="navicon" src="images/yth_flag.png">
             {% if current_user %}
               <form action = "/relate" method="post">
                 <input type = "hidden" name = "post_key" value = "{{post.key.urlsafe()}}">
