@@ -106,6 +106,8 @@ figcaption {
   text-align: center;
 }
 
+
+}
 .bio {
   display: inline-block;
   padding:10px
@@ -280,10 +282,6 @@ figcaption {
   height: 70px;
 }
 
-.bio {
-  margin-top: 20px;
-  line-height: 26px;
-}
 
 .bio.parent_text {
   color: #52405A;
@@ -408,6 +406,7 @@ figcaption {
   background-position: 0px 0px;
   background-size: cover;
 }
+
 
 .past_stories {
   margin-bottom: 20px;
