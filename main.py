@@ -45,13 +45,6 @@ class View(ndb.Model):
     post_key = ndb.KeyProperty(kind=Post)
     view_time = ndb.DateTimeProperty(auto_now_add=True)
 
-class Flag(ndb.Model):
-    user = ndb.StringProperty()
-    post_key = ndb.KeyProperty(kind=Post)
-    flagged = ndb.BooleanProperty()
-    flag_time = ndb.DateTimeProperty(auto_now_add=True)
-    #true = flagged, false = not flagged
-
 #=================HANDLERS===========================
 
 class MainHandler(webapp2.RequestHandler):
@@ -81,8 +74,37 @@ class ArchiveHandler(webapp2.RequestHandler):
 
 class NewPostHandler(webapp2.RequestHandler):
     def get(self):
-        template = jinja_environment.get_template('newpost.html')
-        self.response.write(template.render())
+        user = users.get_current_user()
+
+        if user:
+            logout_url = users.create_logout_url('/')
+            template_vals ={'logout_url':logout_url}
+            template = jinja_environment.get_template('newpost.html')
+            self.response.write(template.render(template_vals))
+            logging.info(user.email())
+
+        else:
+            login_url = users.create_login_url('/')
+            template = jinja_environment.get_template("login.html")
+            template_vals = {'login_url':login_url}
+            self.response.write(template.render(template_vals))
+
+    def post(self):
+        user = users.get_current_user()
+        email = user.email().lower()
+
+        title = self.request.get('title')
+        text = self.request.get('text')
+
+        tags = self.request.get_all('tags')
+        logging.info(tags)
+        self.redirect('/newpost')
+
+
+        post = Post(title = title, text = text, user_email = email, tags = tags)
+        post.put()
+
+
 
 class ResourcesHandler(webapp2.RequestHandler):
     def get(self):

@@ -15,16 +15,16 @@
     {% if current_user %}
       <form action = "/relate" method="post">
         <input type = "hidden" name = "post_key" value = "{{post.key.urlsafe()}}">
-          <button type = "submit" class = "reaction"> relate</button>
+          <button type = "submit" class = "reaction">relate</button>
         </form>
       <form action = "/disrelate" method="post">
         <input type = "hidden" name = "post_key" value = "{{post.key.urlsafe()}}">
-          <button type = "submit" class = "reaction">i'm sorry</button>
+          <button type = "submit" class = "reaction">validate</button>
       </form>
     {% endif %}
 
     <p>Relate Count: {{post.relate_count}}</p>
-    <p>Disrelate Count: {{post.disrelate_count}}</p>
+    <p>Validate Count: {{post.disrelate_count}}</p>
     <p>seen by: {{post.view_count}}</p>
     <p>posted by: {{post.user_email}}</p>
 
