@@ -28,7 +28,8 @@
   <div class="navigation-bar w-clearfix"><a class="brand-link w-inline-block" href="#"><img class="image" src="images/001-rudder.png"><h1 class="brand-text">yes, this happens.</h1></a>
     {% if user %}
     <a class="_826_link w-hidden-small w-hidden-tiny w-inline-block" href="{{logout_url}}" target="_blank">
-      <div class="_826_text w-hidden-small w-hidden-tiny">logout</div></a>
+      <div class="_826_text w-hidden-small w-hidden-tiny">logout</div>
+    </a>
       {% endif %}
   </div>
   <div class="section">
@@ -72,7 +73,7 @@
           <p>Title: {{post.title}}</p>
           <p>{{post.text}}</p>
           <p>Relate Count: {{post.relate_count}}</p>
-          <p>Disrelate Count: {{post.disrelate_count}}</p>
+          <p>Vaidate Count: {{post.disrelate_count}}</p>
           <p>seen by: {{post.view_count}}</p>
           <p>posted by: {{post.user_email}}</p>
         </a>
