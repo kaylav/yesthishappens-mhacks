@@ -369,7 +369,7 @@ textarea.w-select {
 }
 .w-checkbox,
 .w-radio {
-  display: block;
+  display: inline-block;
   margin-bottom: 5px;
   padding-left: 20px;
 }

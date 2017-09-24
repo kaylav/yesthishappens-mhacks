@@ -137,16 +137,16 @@ class PostHandler(webapp2.RequestHandler):
             view = View(user=current_user.email(), post_key=post_key)
             view.put()
             #===trending calculations===
-        views = View.query().fetch()
-        time_difference = datetime.datetime.now() - datetime.timedelta(hours=2)
-        # for post in posts:
-        post_key = post.key.urlsafe()
-        post.recent_view_count = 0
-        for view in views:
-            if view.post_key.urlsafe() == post_key and view.view_time > time_difference:
-                post.recent_view_count += 1
-                post.recent_view_count = post.recent_view_count * post.relate_count
-                post.put()
+        # view = View.query().fetch()
+        # time_difference = datetime.datetime.now() - datetime.timedelta(hours=2)
+        # # for post in posts:
+        # post_key = post.key.urlsafe()
+        # post.recent_view_count = 0
+        # for view in views:
+        #     if view.post_key.urlsafe() == post_key and view.view_time > time_difference:
+        #         post.recent_view_count += 1
+        #         post.recent_view_count = post.recent_view_count * post.relate_count
+        #         post.put()
 
         template_vars = {
             "post": post,
